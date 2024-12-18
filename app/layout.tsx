@@ -6,6 +6,7 @@ import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Theme } from "@radix-ui/themes";
 import ThemeProvider from "@/providers/ThemeProvider";
+import TanstackProvider from "@/providers/TanstackProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://next-todo.app"),
@@ -79,7 +80,9 @@ export default async function RootLayout({ children }: RootLayoutProps) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Theme>
-            {children}
+            <TanstackProvider>
+              {children}
+            </TanstackProvider>
           </Theme>
         </ThemeProvider>
       </body>
