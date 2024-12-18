@@ -1,15 +1,26 @@
 'use client'
 
 import React from "react";
-import TodoFilterCategory from "@/components/todo/todo-filter-categories";
+import WeeklySection from "@/components/weekly-section";
+import FilterCategories from "@/components/todo/todo-filter-categories";
 import { TodoFilterCategoryType } from "@/types/types";
+import { useTodos } from "@/hooks/useTodos";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@radix-ui/themes";
 
 export default function IndexPage() {
   const [filter, setFilter] = React.useState<TodoFilterCategoryType>({});
 
+  const queryClient = useQueryClient();
+  const { data: todos, isLoading } = useTodos(filter);
+
+  console.log(todos)
+
   const onResetFilter = () => {
     setFilter({});
+    queryClient.invalidateQueries({
+      queryKey: ['todos', filter]
+    });
   }
 
   const onFilter = (newFilter: TodoFilterCategoryType) => {
@@ -19,13 +30,17 @@ export default function IndexPage() {
     }));
   };
 
+  const handleSelectCard = (id: any) => {
+    console.log(id)
+  };
+
   return (
     <div className="mx-auto flex flex-col items-center gap-2 py-4 md:py-6 md:pb-8 lg:py-18 lg:pb-20">
       <h1 className="text-center text-xl font-bold leading-tight tracking-tighter md:text-3xl lg:text-4xl">TODO API</h1>
       <div className="w-full flex flex-col md:flex-row justify-between items-center pt-4 gap-2">
         <div className="flex flex-row gap-2 w-full md:flex-auto">
           <div className="w-1/2 md:w-auto">
-            <TodoFilterCategory onChange={onFilter} filter={filter} />
+            <FilterCategories onChange={onFilter} filter={filter} />
           </div>
           <div className="w-1/2 md:w-auto">
             <Button
@@ -38,6 +53,7 @@ export default function IndexPage() {
           </div>
         </div>
       </div>
+      <WeeklySection todos={todos ?? []} onClick={handleSelectCard} />
     </div>
   );
 }
