@@ -9,7 +9,7 @@ import ThemeProvider from "@/providers/ThemeProvider";
 import TanstackProvider from "@/providers/TanstackProvider";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://next-todo.app"),
+  metadataBase: new URL("https://next-todo-ashen-six.vercel.app"),
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
