@@ -5,7 +5,8 @@ import WeeklySection from "@/components/weekly-section";
 import FilterCategories from "@/components/todo/todo-filter-categories";
 import { TodoFilterCategoryType } from "@/types/types";
 import { useTodos } from "@/hooks/useTodos";
-import { useQueryClient } from "@tanstack/react-query";
+import { insertTodo } from "@/hooks/useRandomData";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@radix-ui/themes";
 
 export default function IndexPage() {
@@ -15,6 +16,21 @@ export default function IndexPage() {
   const { data: todos, isLoading } = useTodos(filter);
 
   console.log(todos)
+
+  const mutationTodoAdd = useMutation({
+    mutationFn: () => {
+      return insertTodo()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['todos', filter]
+      });
+    }
+  })
+
+  const onGenerateRandomData = async () => {
+    mutationTodoAdd.mutate();
+  }
 
   const onResetFilter = () => {
     setFilter({});
@@ -51,6 +67,15 @@ export default function IndexPage() {
               Reset Filter
             </Button>
           </div>
+        </div>
+        <div className="flex flex-row justify-center gap-2 w-full md:w-auto">
+          <Button
+            loading={mutationTodoAdd.isPending}
+            onClick={onGenerateRandomData}
+            className="cursor-pointer w-full md:w-auto"
+          >
+            Generate Random Todo
+          </Button>
         </div>
       </div>
       <WeeklySection todos={todos ?? []} onClick={handleSelectCard} />
