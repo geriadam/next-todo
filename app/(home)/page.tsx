@@ -8,6 +8,7 @@ import { useTodos, setCompletedTodo } from "@/hooks/useTodos";
 import { insertTodo } from "@/hooks/useRandomData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@radix-ui/themes";
+import TodoSkeleton from "@/components/todo/todo-skeleton";
 
 export default function IndexPage() {
   const [filter, setFilter] = React.useState<TodoFilterCategoryType>({});
@@ -89,7 +90,13 @@ export default function IndexPage() {
           </Button>
         </div>
       </div>
-      <WeeklySection todos={todos ?? []} onClick={handleSelectCard} />
+      {
+        isLoading ? (
+          <TodoSkeleton />
+        ) : (
+          <WeeklySection todos={todos ?? []} onClick={handleSelectCard} />
+        )
+      }
     </div>
   );
 }
