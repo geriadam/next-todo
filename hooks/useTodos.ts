@@ -25,6 +25,26 @@ const fetchTodos = async (filter: { category_id?: string; created_at?: string })
   return data;
 };
 
+export async function setCompletedTodo(id) {
+  try {
+    const { data, error } = await supabase
+      .from("todos")
+      .update({ is_completed: true })
+      .eq("id", id);;
+
+    if (error) {
+      console.error("Error update is_completed todo:", error.message);
+      throw new Error("Failed to update is_completed todo");
+    }
+
+    console.log("Update inserted successfully:", data);
+    return data;
+  } catch (error) {
+    console.error("Error in setCompletedTodo:", error);
+    throw error;
+  }
+}
+
 export const useTodos = (filter: { category_id?: string; created_at?: string }) => {
   return useQuery<any>({
     queryKey: ['todos', filter],

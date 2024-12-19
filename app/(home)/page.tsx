@@ -4,7 +4,7 @@ import React from "react";
 import WeeklySection from "@/components/weekly-section";
 import FilterCategories from "@/components/todo/todo-filter-categories";
 import { TodoFilterCategoryType } from "@/types/types";
-import { useTodos } from "@/hooks/useTodos";
+import { useTodos, setCompletedTodo } from "@/hooks/useTodos";
 import { insertTodo } from "@/hooks/useRandomData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@radix-ui/themes";
@@ -20,6 +20,17 @@ export default function IndexPage() {
   const mutationTodoAdd = useMutation({
     mutationFn: () => {
       return insertTodo()
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['todos', filter]
+      });
+    }
+  })
+
+  const mutationTodoIsCompleted = useMutation({
+    mutationFn: (id) => {
+      return setCompletedTodo(id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -47,7 +58,7 @@ export default function IndexPage() {
   };
 
   const handleSelectCard = (id: any) => {
-    console.log(id)
+    mutationTodoIsCompleted.mutate(id);
   };
 
   return (
